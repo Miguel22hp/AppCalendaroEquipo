@@ -20,6 +20,15 @@ BASE_PARAMS = {
     "IdGrupo": "201",
 }
 
+def test_external_connection(host):
+    print(f"[TEST] Probando {host}", flush=True)
+
+    try:
+        with socket.create_connection((host, 443), timeout=8):
+            print(f"[TEST] {host}: TCP OK", flush=True)
+    except Exception as exc:
+        print(f"[TEST] {host}: ERROR {repr(exc)}", flush=True)
+
 def fetch_json(params):
     query = "&".join(f"{k}={v}" for k, v in params.items())
     url = f"{UPSTREAM}?{query}"
@@ -36,6 +45,9 @@ def fetch_json(params):
             "Accept": "application/json, text/javascript, */*; q=0.01",
         },
     )
+
+    test_external_connection("www.google.com")
+    test_external_connection("juegosdeportivos.ecmadrid.org")
 
     try:
         host = urlparse(url).hostname
@@ -60,7 +72,7 @@ def fetch_json(params):
 
             with context.wrap_socket(sock, server_hostname=host):
                 print("[NET] TLS OK", flush=True)
-                
+
         with urlopen(req, timeout=20) as response:
             raw = response.read().decode("utf-8-sig")
 
