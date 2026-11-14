@@ -5,6 +5,9 @@ from urllib.error import URLError, HTTPError
 import json
 import os
 import time
+import socket
+import ssl
+from urllib.parse import urlparse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
@@ -35,6 +38,29 @@ def fetch_json(params):
     )
 
     try:
+        host = urlparse(url).hostname
+
+        print(f"[NET] Comprobando DNS de {host}", flush=True)
+
+        addresses = socket.getaddrinfo(
+            host, 443, type=socket.SOCK_STREAM
+        )
+
+        print(
+            f"[NET] DNS OK: {[address[4][0] for address in addresses]}",
+            flush=True
+        )
+
+        print("[NET] Comprobando conexión TCP...", flush=True)
+
+        with socket.create_connection((host, 443), timeout=8) as sock:
+            print("[NET] TCP OK. Comprobando TLS...", flush=True)
+
+            context = ssl.create_default_context()
+
+            with context.wrap_socket(sock, server_hostname=host):
+                print("[NET] TLS OK", flush=True)
+                
         with urlopen(req, timeout=20) as response:
             raw = response.read().decode("utf-8-sig")
 
