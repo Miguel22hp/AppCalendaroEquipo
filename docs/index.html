@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#a92a0a">
+  <title>Calasancio · Calendario</title>
+  <link rel="stylesheet" href="/styles.css">
+
+
+  <link rel="manifest" href="/manifest.json">
+
+  <meta name="theme-color" content="#a92a0a">
+
+  <!-- Compatibilidad con la instalación en iPhone -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calasancio">
+
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark">C</div>
+      <div>
+        <p class="eyebrow">JUEGOS DEPORTIVOS · ECM</p>
+        <h1>Calasancio</h1>
+        <p class="season">Temporada 2026 / 2027 · Sénior masculino</p>
+      </div>
+      <button id="refreshBtn" class="refresh-btn" aria-label="Actualizar calendario" title="Actualizar">↻</button>
+    </header>
+
+    <section class="content">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow dark">CALENDARIO DE PARTIDOS</p>
+          <h2>Próximos encuentros</h2>
+        </div>
+        <span id="countPill" class="count-pill">Cargando…</span>
+      </div>
+
+      <div id="status" class="status" role="status">Consultando el calendario oficial…</div>
+
+      <section id="calendar" class="calendar" hidden>
+        <div class="carousel-top">
+          <button id="prevBtn" class="nav-btn" aria-label="Partido anterior">‹</button>
+          <div class="match-position">
+            <span id="roundLabel">JORNADA</span>
+            <strong id="positionLabel">1 / 10</strong>
+          </div>
+          <button id="nextBtn" class="nav-btn" aria-label="Partido siguiente">›</button>
+        </div>
+
+        <div id="trackViewport" class="track-viewport">
+          <div id="matchCard" class="match-card" tabindex="0">
+            <div class="card-meta">
+              <span id="dateBadge" class="date-badge">14 NOV</span>
+              <span id="stateBadge" class="state-badge">Pendiente</span>
+            </div>
+            <div class="match-time" id="matchTime">16:15</div>
+            <div class="teams">
+              <div class="team">
+                <div class="team-crest" id="homeCrest">C</div>
+                <div class="team-name" id="homeTeam">Calasancio</div>
+                <span class="team-side">LOCAL</span>
+              </div>
+              <div class="versus">VS</div>
+              <div class="team">
+                <div class="team-crest away" id="awayCrest">?</div>
+                <div class="team-name" id="awayTeam">Rival</div>
+                <span class="team-side">VISITANTE</span>
+              </div>
+            </div>
+            <div class="score-row" id="scoreRow" hidden>
+              <span id="homeScore">0</span><span class="score-separator">—</span><span id="awayScore">0</span>
+            </div>
+            <div class="venue">
+              <span class="pin">⌖</span>
+              <div>
+                <strong id="venueName">Instalación deportiva</strong>
+                <p id="venueAddress">Dirección del partido</p>
+              </div>
+            </div>
+            <a id="mapsLink" class="maps-link" href="#" target="_blank" rel="noopener">Ver ubicación en Google Maps ↗</a>
+          </div>
+        </div>
+
+        <div class="dots" id="dots" aria-label="Seleccionar partido"></div>
+        <p class="swipe-hint">Desliza para cambiar de partido</p>
+        <div class="bottom-controls">
+          <button id="firstBtn" class="text-btn">« Primero</button>
+          <button id="lastBtn" class="text-btn">Último »</button>
+        </div>
+      </section>
+
+      <section id="empty" class="empty" hidden>
+        <div class="empty-icon">⚽</div>
+        <h3>No hay partidos para este equipo</h3>
+        <p>La consulta se ha realizado, pero no se han encontrado encuentros en las jornadas disponibles.</p>
+      </section>
+
+      <footer>
+        <span>Datos consultados en Juegos Deportivos ECMadrid</span>
+        <span id="updatedAt"></span>
+      </footer>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
