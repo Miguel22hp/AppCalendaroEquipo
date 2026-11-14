@@ -18,20 +18,45 @@ BASE_PARAMS = {
 
 def fetch_json(params):
     query = "&".join(f"{k}={v}" for k, v in params.items())
+    url = f"{UPSTREAM}?{query}"
+
+    start = time.time()
+
+    print(f"[ECMADRID] Iniciando: IdJornada={params['IdJornada']}, "
+          f"IdEquipo={params['IdEquipo']}", flush=True)
+
     req = Request(
-        f"{UPSTREAM}?{query}",
+        url,
         headers={
             "User-Agent": "Mozilla/5.0",
             "Accept": "application/json, text/javascript, */*; q=0.01",
         },
     )
-    with urlopen(req, timeout=20) as response:
-        raw = response.read().decode("utf-8-sig")
-    data = json.loads(raw)
-    # En algunas respuestas ASP.NET puede llegar JSON serializado dentro de una cadena.
-    if isinstance(data, str):
-        data = json.loads(data)
-    return data
+
+    try:
+        with urlopen(req, timeout=20) as response:
+            raw = response.read().decode("utf-8-sig")
+
+        data = json.loads(raw)
+
+        if isinstance(data, str):
+            data = json.loads(data)
+
+        print(
+            f"[ECMADRID] OK: IdJornada={params['IdJornada']} "
+            f"en {time.time() - start:.2f}s",
+            flush=True
+        )
+
+        return data
+
+    except Exception as exc:
+        print(
+            f"[ECMADRID] ERROR: IdJornada={params['IdJornada']} "
+            f"tras {time.time() - start:.2f}s: {repr(exc)}",
+            flush=True
+        )
+        raise
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
