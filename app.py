@@ -4,6 +4,7 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 import json
 import os
+import time
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
