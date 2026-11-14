@@ -1,27 +1,25 @@
 
-const CACHE_NAME = "calasancio-v1";
+const BASE = new URL("./", self.location).pathname;
+const CACHE_NAME = "calasancio-v2";
 
 const APP_FILES = [
-  "/",
-  "/index.html",
-  "/styles.css",
-  "/app.js",
-  "/manifest.json",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png"
+  BASE,
+  `${BASE}index.html`,
+  `${BASE}styles.css`,
+  `${BASE}app.js`,
+  `${BASE}manifest.json`,
+  `${BASE}icons/icon-192.png`,
+  `${BASE}icons/icon-512.png`,
+  `${BASE}icons/apple-touch-icon.png`
 ];
 
-// Instalar y guardar los archivos de la aplicación.
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_FILES))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES))
   );
-
   self.skipWaiting();
 });
 
-// Activar y eliminar versiones antiguas de caché.
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -32,27 +30,20 @@ self.addEventListener("activate", event => {
       )
     )
   );
-
   self.clients.claim();
 });
 
-// Servir archivos locales y consultar la red primero.
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
 
-  // No interceptar peticiones de la API.
-  if (url.pathname.startsWith("/api/")) {
-    return;
-  }
-
-  if (event.request.method !== "GET") {
-    return;
-  }
+  if (url.pathname.includes("/api/")) return;
+  if (event.request.method !== "GET") return;
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        if (response.ok && url.origin === self.location.origin) {
+        if (response.ok) {
           const copy = response.clone();
           caches.open(CACHE_NAME)
             .then(cache => cache.put(event.request, copy));
