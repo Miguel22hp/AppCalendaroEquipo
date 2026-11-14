@@ -90,9 +90,12 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
 if __name__ == "__main__":
-    server = ThreadingHTTPServer(("127.0.0.1", 8000), Handler)
-    print("Calendario Calasancio disponible en http://127.0.0.1:8000")
-    print("Pulsa Ctrl+C para detenerlo.")
+    port = int(os.environ.get("PORT", 8000))
+
+    server = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+
+    print(f"Calendario Calasancio disponible en el puerto {port}")
+
     try:
         server.serve_forever()
     except KeyboardInterrupt:
